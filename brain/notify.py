@@ -26,7 +26,7 @@ def send_message(text: str) -> bool:
     try:
         response = requests.post(
             TELEGRAM_API.format(token=bot_token),
-            json={"chat_id": chat_id, "text": text, "parse_mode": "Markdown"},
+            json={"chat_id": chat_id, "text": text},
             timeout=10,
         )
         response.raise_for_status()
