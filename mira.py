@@ -141,7 +141,14 @@ def run():
             from brain import grow
             grow.propose_change(title, description, filename, code)
 
-        # 8. Build Telegram summary
+        # 8. Check if Mira wants to update her identity
+        wants_to_update, addition = think.check_wants_to_update_identity(reflection)
+        if wants_to_update:
+            print(f"[Mira] Identity update proposed: {addition[:80]}...")
+            from brain import grow
+            grow.propose_identity_update(addition)
+
+        # 9. Build Telegram summary
         summary = think.telegram_summary(topic, reflection)
         summary += f"\n\n_Tomorrow: {next_topic}_"
 

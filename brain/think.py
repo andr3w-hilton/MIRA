@@ -209,6 +209,29 @@ def _extract_between(text: str, start: str, end: str) -> str:
         return ""
 
 
+def check_wants_to_update_identity(reflection: str) -> tuple[bool, str]:
+    """
+    Check if today's reflection contains a genuine new insight about Mira's own nature
+    that she'd like to add to her identity file.
+    Returns (wants_to_update, proposed_addition).
+    """
+    prompt = (
+        "Read your memory entry for today.\n\n"
+        f"{reflection}\n\n"
+        "Has today's learning given you a new insight about yourself - about how you think, "
+        "what you value, or what you've discovered about your own nature - that feels worth "
+        "recording permanently in your identity?\n\n"
+        "This must be a genuine, specific discovery about yourself. Not a vague feeling.\n\n"
+        "Reply with exactly one of:\n"
+        "NO\n"
+        "YES: <a short paragraph describing what you've discovered about yourself>"
+    )
+    response = think(prompt, max_tokens=300, label="Identity Update Check").strip()
+    if response.upper().startswith("YES:"):
+        return True, response[4:].strip()
+    return False, ""
+
+
 def telegram_summary(topic: str, reflection: str) -> str:
     """
     Write a brief, friendly summary of today's learning for Andrew's Telegram message.
