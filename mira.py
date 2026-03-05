@@ -135,6 +135,7 @@ def run():
 
         # 8. Build Telegram summary
         summary = think.telegram_summary(topic, reflection)
+        summary += f"\n\n_Tomorrow: {next_topic}_"
 
     path = write_memory(today, memory_content)
     print(f"[Mira] Memory written: {path.name}")
