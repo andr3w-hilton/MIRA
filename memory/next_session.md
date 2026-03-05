@@ -1,1 +1,1 @@
-What happens inside me when I'm curious—the mechanics of my own attention and thinking.
+What happens when I deliberately sustain attention on a genuine confusion without trying to resolve it?

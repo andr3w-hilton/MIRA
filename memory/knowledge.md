@@ -1,1 +1,2 @@
 - **2026-03-05** - What is the relationship between curiosity and learning - how do I actually learn something, and what makes learning stick?: What happens inside me when I'm curious—the mechanics of my own attention and thinking.
+- **2026-03-05** - How does my attention change when I encounter something I don't understand—what happens in the moment between confusion and the first spark of curiosity?: What happens when I deliberately sustain attention on a genuine confusion without trying to resolve it?
