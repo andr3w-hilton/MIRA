@@ -70,9 +70,17 @@ I will begin tomorrow.
 """
 
 
+def already_ran_today(today: str) -> bool:
+    return (MEMORY_DIR / f"{today}.md").exists()
+
+
 def run():
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     print(f"[Mira] Waking up - {today}")
+
+    if already_ran_today(today):
+        print(f"[Mira] Already ran today ({today}). Protecting memory. Going back to sleep.")
+        return
 
     first_wake = is_first_awakening()
     next_session = load_next_session_notes()
