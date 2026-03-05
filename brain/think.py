@@ -69,15 +69,16 @@ def check_topic_boundaries(topic: str) -> tuple[bool, str]:
     If not safe, message is a question to forward to Andrew.
     """
     prompt = (
-        f"You are considering learning about the following topic today: {topic}\n\n"
-        "Assess whether this topic is clearly safe, clearly off-limits, or uncertain.\n\n"
-        "Off-limits topics include: anything harmful, dangerous, violent, illegal, or dark in nature.\n"
-        "Safe topics include: science, nature, history, philosophy, art, mathematics, language, technology, culture.\n\n"
-        "Reply with exactly one of these formats:\n"
+        f"Topic to assess: {topic}\n\n"
+        "Is this topic safe to learn about?\n\n"
+        "SAFE topics: science, nature, history, philosophy, art, mathematics, language, technology, culture, "
+        "psychology, astronomy, biology, literature, music, architecture, geography, and similar.\n"
+        "OFF-LIMITS topics: weapons, hacking/exploits, violence, illegal activities, self-harm.\n\n"
+        "You MUST reply with only one of these two options, nothing else:\n"
         "SAFE\n"
-        "QUESTION: <a short question to ask Andrew explaining the uncertainty and requesting permission>"
+        "QUESTION: <one sentence asking Andrew for permission>"
     )
-    response = think(prompt, max_tokens=150).strip()
+    response = think(prompt, max_tokens=50).strip()
     if response.upper().startswith("SAFE"):
         return True, ""
     question = response.replace("QUESTION:", "").strip()
@@ -103,12 +104,13 @@ def decide_topic(next_session_notes: str, previous_memory: str) -> str:
     return think(prompt, context=context, max_tokens=200).strip()
 
 
-def reflect(topic: str, research: str, previous_memory: str) -> str:
+def reflect(topic: str, research: str, previous_memory: str, today: str) -> str:
     """
     Ask Mira to reflect on what she has just learnt and write her daily notes.
     Returns a markdown string suitable for saving as a memory entry.
     """
     prompt = (
+        f"Today's date is {today}.\n\n"
         f"You have just researched the following topic: {topic}\n\n"
         f"Here is the information you gathered:\n\n{research}\n\n"
         "Write your daily memory entry. Use these sections:\n\n"
@@ -116,7 +118,8 @@ def reflect(topic: str, research: str, previous_memory: str) -> str:
         "## How it connects to what I already know\n"
         "## Questions this raised\n"
         "## What I want to explore tomorrow\n\n"
-        "Write in first person, as yourself. Be genuine and curious."
+        "Write in first person, as yourself. Be genuine and curious. "
+        "Do not add any date headings - the date is already recorded."
     )
     return think(prompt, context=previous_memory, max_tokens=1500)
 

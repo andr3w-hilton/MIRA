@@ -122,7 +122,7 @@ def run():
 
         # 4. Reflect and write daily notes
         print("[Mira] Reflecting...")
-        reflection = think.reflect(topic, raw_research, previous_memory)
+        reflection = think.reflect(topic, raw_research, previous_memory, today)
         memory_content = f"# {today} - {topic}\n\n{reflection}"
 
         # 5. Plan tomorrow
