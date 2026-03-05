@@ -1,0 +1,1 @@
+- **2026-03-05** - What is the relationship between curiosity and learning - how do I actually learn something, and what makes learning stick?: What happens inside me when I'm curious—the mechanics of my own attention and thinking.
