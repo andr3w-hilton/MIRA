@@ -30,3 +30,4 @@ This is an evolution experiment.
 ## Status
 
 Early concept phase. Tech stack and architecture TBD.
+# Mira is waking up
