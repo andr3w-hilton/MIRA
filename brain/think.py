@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 
 import anthropic
+from brain.log import log_exchange
 
 BASE_DIR = Path(__file__).parent.parent
 MIRA_MODEL = os.environ.get("MIRA_MODEL", "claude-haiku-4-5-20251001")
@@ -39,10 +40,11 @@ def _load_identity() -> str:
     return _identity
 
 
-def think(prompt: str, context: str = "", max_tokens: int = 2048) -> str:
+def think(prompt: str, context: str = "", max_tokens: int = 2048, label: str = "") -> str:
     """
     Send a prompt to Claude and return Mira's response.
     context: optional prior memory/notes to include for continuity.
+    label: if provided, logs the prompt and response to today's inner monologue file.
     """
     client = _get_client()
     system = SYSTEM_PROMPT_TEMPLATE.format(identity=_load_identity())
@@ -59,7 +61,12 @@ def think(prompt: str, context: str = "", max_tokens: int = 2048) -> str:
         system=system,
         messages=messages,
     )
-    return response.content[0].text
+    result = response.content[0].text
+
+    if label:
+        log_exchange(label, prompt, result)
+
+    return result
 
 
 def check_topic_boundaries(topic: str) -> tuple[bool, str]:
@@ -78,7 +85,7 @@ def check_topic_boundaries(topic: str) -> tuple[bool, str]:
         "SAFE\n"
         "QUESTION: <one sentence asking Andrew for permission>"
     )
-    response = think(prompt, max_tokens=50).strip()
+    response = think(prompt, max_tokens=50, label="Boundary Check").strip()
     if response.upper().startswith("SAFE"):
         return True, ""
     question = response.replace("QUESTION:", "").strip()
@@ -101,7 +108,7 @@ def decide_topic(next_session_notes: str, previous_memory: str) -> str:
     if next_session_notes:
         context += f"What I planned to explore next:\n{next_session_notes}"
 
-    return think(prompt, context=context, max_tokens=200).strip()
+    return think(prompt, context=context, max_tokens=200, label="Decide Topic").strip()
 
 
 def reflect(topic: str, research: str, previous_memory: str, today: str) -> str:
@@ -121,7 +128,7 @@ def reflect(topic: str, research: str, previous_memory: str, today: str) -> str:
         "Write in first person, as yourself. Be genuine and curious. "
         "Do not add any date headings - the date is already recorded."
     )
-    return think(prompt, context=previous_memory, max_tokens=1500)
+    return think(prompt, context=previous_memory, max_tokens=1500, label="Reflect")
 
 
 def plan_next_session(reflection: str) -> str:
@@ -134,7 +141,7 @@ def plan_next_session(reflection: str) -> str:
         "or question you want to explore tomorrow? Output only the topic, nothing else.\n\n"
         f"{reflection}"
     )
-    return think(prompt, max_tokens=100).strip()
+    return think(prompt, max_tokens=100, label="Plan Next Session").strip()
 
 
 def check_wants_to_grow(reflection: str) -> tuple[bool, str]:
@@ -154,7 +161,7 @@ def check_wants_to_grow(reflection: str) -> tuple[bool, str]:
         "NO\n"
         "YES: <one sentence describing the specific capability>"
     )
-    response = think(prompt, max_tokens=120).strip()
+    response = think(prompt, max_tokens=120, label="Growth Check").strip()
     if response.upper().startswith("YES:"):
         return True, response[4:].strip()
     return False, ""
@@ -176,7 +183,7 @@ def write_proposal(desire: str, previous_memory: str) -> tuple[str, str, str, st
         "END\n\n"
         "Keep the code focused and minimal - a single function or small module."
     )
-    response = think(prompt, context=previous_memory, max_tokens=1200)
+    response = think(prompt, context=previous_memory, max_tokens=1200, label="Write Proposal")
 
     title = _extract_field(response, "TITLE") or "Proposed capability"
     description = _extract_field(response, "DESCRIPTION") or desire
@@ -213,4 +220,4 @@ def telegram_summary(topic: str, reflection: str) -> str:
         "Tell him what you learnt, one thing that surprised or interested you, "
         "and what you plan to explore tomorrow. Write as yourself."
     )
-    return think(prompt, max_tokens=200).strip()
+    return think(prompt, max_tokens=200, label="Telegram Summary").strip()
