@@ -32,6 +32,10 @@ def send_message(text: str) -> bool:
         response.raise_for_status()
         print("[Notify] Telegram message sent.")
         return True
+    except requests.exceptions.HTTPError as e:
+        body = e.response.text if e.response is not None else "no body"
+        print(f"[Notify] Telegram send failed: {e} | response: {body}")
+        return False
     except Exception as e:
         print(f"[Notify] Telegram send failed: {e}")
         return False
