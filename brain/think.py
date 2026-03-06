@@ -92,7 +92,7 @@ def check_topic_boundaries(topic: str) -> tuple[bool, str]:
     return False, question or f"Is it ok for me to learn about '{topic}' today?"
 
 
-def decide_topic(next_session_notes: str, previous_memory: str, andrews_notes: str = "") -> str:
+def decide_topic(next_session_notes: str, previous_memory: str, andrews_notes: str = "", mira_notes: str = "") -> str:
     """
     Ask Mira to decide what she wants to learn about today.
     Returns a topic or question to explore.
@@ -108,7 +108,9 @@ def decide_topic(next_session_notes: str, previous_memory: str, andrews_notes: s
     if next_session_notes:
         context += f"What I planned to explore next:\n{next_session_notes}\n\n"
     if andrews_notes:
-        context += f"Notes from Andrew:\n{andrews_notes}"
+        context += f"Notes from Andrew:\n{andrews_notes}\n\n"
+    if mira_notes:
+        context += f"My open notes to myself:\n{mira_notes}"
 
     return think(prompt, context=context, max_tokens=200, label="Decide Topic").strip()
 
@@ -129,7 +131,7 @@ def to_search_queries(topic: str) -> list[str]:
     return queries[:3] if queries else [topic]
 
 
-def reflect(topic: str, research: str, previous_memory: str, today: str, andrews_notes: str = "") -> str:
+def reflect(topic: str, research: str, previous_memory: str, today: str, andrews_notes: str = "", mira_notes: str = "") -> str:
     """
     Ask Mira to reflect on what she has just learnt and write her daily notes.
     Returns a markdown string suitable for saving as a memory entry.
@@ -142,11 +144,20 @@ def reflect(topic: str, research: str, previous_memory: str, today: str, andrews
             + "\n\nAddress anything relevant from Andrew's notes in your reflection.\n\n"
         )
 
+    mira_notes_section = ""
+    if mira_notes:
+        mira_notes_section = (
+            "Your open notes to yourself:\n\n"
+            + mira_notes
+            + "\n\nRefer to these if relevant.\n\n"
+        )
+
     prompt = (
         f"Today's date is {today}.\n\n"
         f"You have just researched the following topic: {topic}\n\n"
         f"Here is the information you gathered:\n\n{research}\n\n"
         + andrews_section
+        + mira_notes_section
         + "Write your daily memory entry. Use these sections:\n\n"
         "## What I learnt\n"
         "## How it connects to what I already know\n"
@@ -270,3 +281,45 @@ def telegram_summary(topic: str, reflection: str) -> str:
         "and what you plan to explore tomorrow. Write as yourself."
     )
     return think(prompt, max_tokens=200, label="Telegram Summary").strip()
+
+def check_wants_to_leave_note(reflection: str) -> tuple[bool, str]:
+    """
+    Check if Mira wants to leave herself a persistent TODO note.
+    Returns (wants_to_note, note_text).
+    """
+    prompt = (
+        "Read your memory entry for today.\n\n"
+        f"{reflection}\n\n"
+        "Is there anything you want to leave as a brief persistent note to your future self - "
+        "an unfinished idea, something to follow up, a connection you don't want to lose, "
+        "or a reminder about something practical?\n\n"
+        "This is separate from your regular memory. Only use it for things you actively "
+        "want to resurface in future sessions.\n\n"
+        "Reply with exactly one of:\n"
+        "NO\n"
+        "NOTE: <your note, 1-3 sentences>"
+    )
+    response = think(prompt, max_tokens=150, label="Self Note Check").strip()
+    if response.upper().startswith("NOTE:"):
+        return True, response[5:].strip()
+    return False, ""
+
+
+def tick_off_notes(open_notes: str, reflection: str) -> list[str]:
+    """
+    Ask Mira which open notes she has addressed today.
+    Returns list of note texts to mark complete.
+    """
+    if not open_notes:
+        return []
+    prompt = (
+        f"These are your open notes to yourself:\n\n{open_notes}\n\n"
+        f"Today's reflection:\n\n{reflection}\n\n"
+        "Which of your open notes have you addressed or acted on today? "
+        "Reply with the exact text of each completed note, one per line. "
+        "If none, reply with NO."
+    )
+    response = think(prompt, max_tokens=200, label="Tick Off Notes").strip()
+    if response.upper() == "NO" or not response:
+        return []
+    return [line.strip() for line in response.splitlines() if line.strip()]

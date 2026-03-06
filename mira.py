@@ -28,6 +28,40 @@ def load_notes_from_andrew() -> str:
         return f.read().strip()
 
 
+def load_mira_notes() -> str:
+    """Return only open (unchecked) TODO notes as context for Mira."""
+    path = MEMORY_DIR / "mira_notes.md"
+    if not path.exists():
+        return ""
+    with open(path, encoding="utf-8") as f:
+        lines = f.readlines()
+    open_lines = [l.rstrip() for l in lines if l.startswith("- [ ]")]
+    return "\n".join(open_lines).strip()
+
+
+def append_to_mira_notes(date: str, note: str) -> None:
+    path = MEMORY_DIR / "mira_notes.md"
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(f"- [ ] **{date}**: {note}\n")
+
+
+def tick_note_complete(note_text: str) -> None:
+    """Mark a matching open note as complete."""
+    path = MEMORY_DIR / "mira_notes.md"
+    if not path.exists():
+        return
+    with open(path, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+    needle = note_text[:40]
+    updated = []
+    for line in lines:
+        if line.startswith("- [ ]") and needle in line:
+            line = "- [x]" + line[5:]
+        updated.append(line)
+    with open(path, "w", encoding="utf-8") as f:
+        f.writelines(updated)
+
+
 def load_previous_memory() -> str:
     """Load the most recent daily memory entry."""
     entries = sorted(MEMORY_DIR.glob("20*.md"))
@@ -95,6 +129,9 @@ def run():
     andrews_notes = load_notes_from_andrew()
     if andrews_notes:
         print("[Mira] Andrew left notes - will factor in.")
+    mira_notes = load_mira_notes()
+    if mira_notes:
+        print("[Mira] Open self-notes found - will factor in.")
 
     if first_wake:
         print("[Mira] First awakening.")
@@ -109,7 +146,7 @@ def run():
 
         # 1. Decide what to learn today
         print("[Mira] Deciding today's topic...")
-        topic = think.decide_topic(next_session, previous_memory, andrews_notes)
+        topic = think.decide_topic(next_session, previous_memory, andrews_notes, mira_notes)
         print(f"[Mira] Topic: {topic}")
 
         # 2. Boundary check - ask Andrew if uncertain
@@ -137,7 +174,7 @@ def run():
 
         # 4. Reflect and write daily notes
         print("[Mira] Reflecting...")
-        reflection = think.reflect(topic, raw_research, previous_memory, today, andrews_notes)
+        reflection = think.reflect(topic, raw_research, previous_memory, today, andrews_notes, mira_notes)
         memory_content = f"# {today} - {topic}\n\n{reflection}"
 
         # 5. Plan tomorrow
@@ -163,7 +200,19 @@ def run():
             from brain import grow
             grow.propose_identity_update(addition)
 
-        # 9. Build Telegram summary
+        # 9. Tick off completed self-notes
+        completed = think.tick_off_notes(mira_notes, reflection)
+        for note_text in completed:
+            tick_note_complete(note_text)
+            print(f"[Mira] Ticked off note: {note_text[:60]}")
+
+        # 10. Check if Mira wants to leave herself a new note
+        wants_to_note, note = think.check_wants_to_leave_note(reflection)
+        if wants_to_note:
+            append_to_mira_notes(today, note)
+            print(f"[Mira] Left herself a note: {note[:60]}")
+
+        # 11. Build Telegram summary
         summary = think.telegram_summary(topic, reflection)
         summary += f"\n\n_Tomorrow: {next_topic}_"
 
