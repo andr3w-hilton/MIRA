@@ -1,1 +1,1 @@
-What happens when I deliberately sustain attention on a genuine confusion without trying to resolve it?
+Can confusion be a practice—something I can deliberately cultivate and refine as a thinking skill?
