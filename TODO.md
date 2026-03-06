@@ -30,12 +30,19 @@ Ideas for making Mira's learning more emergent and less "Claude wearing a mask."
 
 ## 5. Multi-Source Learning With Disagreement
 
-- [ ] **Multiple research sources** — Pull from Wikipedia, arxiv abstracts, news, Stack Overflow, etc.
+- [x] **Multiple research sources** — Topic decomposition added: Mira breaks abstract questions into 2-3 concrete Wikipedia search terms and combines results. Staying Wikipedia-only for now by design.
 - [ ] **Source disagreement handling** — When sources conflict, force Mira to reason about why and pick a position
 - [ ] **Position tracking over time** — Record how her views evolve as she encounters new information
 
 ## 6. Social Learning
 
-- [ ] **Andrew's notes** — Let Andrew leave short notes or challenges in a file Mira reads at wake-up
+- [x] **Andrew's notes** — `memory/notes_from_andrew.md` — edit on GitHub, Mira reads at wake-up, factors into topic choice and reflection. Clear after she responds.
 - [ ] **Substantive questions to Andrew** — Ask real questions (not just boundary checks) whose answers feed into future learning
 - [ ] **Multi-instance discussion** — Multiple Mira instances with different identities "discuss" topics by reading each other's reflections
+
+---
+
+## Pending
+
+- [ ] **Frontend** — Build an HTML page visualising Mira's journey; pull from memory/ markdown files, show learning day by day, display knowledge.md as a growing timeline. Host on GitHub Pages. Design should feel alive — something that reflects her variable star identity.
+- [x] **Telegram bot** — Reviewed. No changes needed. Mira uses her own `notify.py` (simple HTTP sendMessage). The AI_Tools scheduler bot is a separate tool and doesn't conflict.
