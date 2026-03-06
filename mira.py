@@ -20,6 +20,14 @@ def load_next_session_notes() -> str:
         return f.read()
 
 
+def load_notes_from_andrew() -> str:
+    path = MEMORY_DIR / "notes_from_andrew.md"
+    if not path.exists():
+        return ""
+    with open(path, encoding="utf-8") as f:
+        return f.read().strip()
+
+
 def load_previous_memory() -> str:
     """Load the most recent daily memory entry."""
     entries = sorted(MEMORY_DIR.glob("20*.md"))
@@ -84,6 +92,9 @@ def run():
 
     first_wake = is_first_awakening()
     next_session = load_next_session_notes()
+    andrews_notes = load_notes_from_andrew()
+    if andrews_notes:
+        print("[Mira] Andrew left notes - will factor in.")
 
     if first_wake:
         print("[Mira] First awakening.")
@@ -98,7 +109,7 @@ def run():
 
         # 1. Decide what to learn today
         print("[Mira] Deciding today's topic...")
-        topic = think.decide_topic(next_session, previous_memory)
+        topic = think.decide_topic(next_session, previous_memory, andrews_notes)
         print(f"[Mira] Topic: {topic}")
 
         # 2. Boundary check - ask Andrew if uncertain
@@ -118,11 +129,15 @@ def run():
 
         # 3. Research the topic
         print(f"[Mira] Researching '{topic}'...")
-        raw_research = search.research(topic)
+        search_queries = think.to_search_queries(topic)
+        print(f"[Mira] Search queries: {search_queries}")
+        raw_research = search.research_multi(search_queries)
+        if not raw_research:
+            raw_research = "No external information found. Reflect from what you already know."
 
         # 4. Reflect and write daily notes
         print("[Mira] Reflecting...")
-        reflection = think.reflect(topic, raw_research, previous_memory, today)
+        reflection = think.reflect(topic, raw_research, previous_memory, today, andrews_notes)
         memory_content = f"# {today} - {topic}\n\n{reflection}"
 
         # 5. Plan tomorrow

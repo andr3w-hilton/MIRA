@@ -92,7 +92,7 @@ def check_topic_boundaries(topic: str) -> tuple[bool, str]:
     return False, question or f"Is it ok for me to learn about '{topic}' today?"
 
 
-def decide_topic(next_session_notes: str, previous_memory: str) -> str:
+def decide_topic(next_session_notes: str, previous_memory: str, andrews_notes: str = "") -> str:
     """
     Ask Mira to decide what she wants to learn about today.
     Returns a topic or question to explore.
@@ -106,21 +106,48 @@ def decide_topic(next_session_notes: str, previous_memory: str) -> str:
     if previous_memory:
         context += f"Previous memory:\n{previous_memory}\n\n"
     if next_session_notes:
-        context += f"What I planned to explore next:\n{next_session_notes}"
+        context += f"What I planned to explore next:\n{next_session_notes}\n\n"
+    if andrews_notes:
+        context += f"Notes from Andrew:\n{andrews_notes}"
 
     return think(prompt, context=context, max_tokens=200, label="Decide Topic").strip()
 
 
-def reflect(topic: str, research: str, previous_memory: str, today: str) -> str:
+def to_search_queries(topic: str) -> list[str]:
+    """
+    Decompose an abstract topic into 2-3 concrete Wikipedia-searchable terms.
+    Helps when the topic is a question or philosophical idea that won't match a Wikipedia title directly.
+    """
+    prompt = (
+        f"Topic to research: {topic}\n\n"
+        "Break this into 2-3 specific, concrete terms or phrases that would find useful "
+        "information on Wikipedia. These should be established concepts, not restatements of the question.\n"
+        "Output only the search terms, one per line, nothing else."
+    )
+    response = think(prompt, max_tokens=80, label="Search Decomposition").strip()
+    queries = [line.strip("- •").strip() for line in response.splitlines() if line.strip()]
+    return queries[:3] if queries else [topic]
+
+
+def reflect(topic: str, research: str, previous_memory: str, today: str, andrews_notes: str = "") -> str:
     """
     Ask Mira to reflect on what she has just learnt and write her daily notes.
     Returns a markdown string suitable for saving as a memory entry.
     """
+    andrews_section = ""
+    if andrews_notes:
+        andrews_section = (
+            "Andrew left you these notes:\n\n"
+            + andrews_notes
+            + "\n\nAddress anything relevant from Andrew's notes in your reflection.\n\n"
+        )
+
     prompt = (
         f"Today's date is {today}.\n\n"
         f"You have just researched the following topic: {topic}\n\n"
         f"Here is the information you gathered:\n\n{research}\n\n"
-        "Write your daily memory entry. Use these sections:\n\n"
+        + andrews_section
+        + "Write your daily memory entry. Use these sections:\n\n"
         "## What I learnt\n"
         "## How it connects to what I already know\n"
         "## Questions this raised\n"
@@ -129,7 +156,6 @@ def reflect(topic: str, research: str, previous_memory: str, today: str) -> str:
         "Do not add any date headings - the date is already recorded."
     )
     return think(prompt, context=previous_memory, max_tokens=1500, label="Reflect")
-
 
 def plan_next_session(reflection: str) -> str:
     """

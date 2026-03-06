@@ -53,14 +53,33 @@ def _fetch_extract(title: str, max_chars: int = 5000) -> Optional[str]:
 
 
 def research(topic: str) -> str:
-    """
-    Primary research function. Searches Wikipedia for the topic and returns an extract.
-    Two-step: find best matching title, then fetch its content.
-    TODO: add DuckDuckGo / Brave Search API for broader web access.
-    """
+    """Search Wikipedia for a single topic. Returns extract or empty string."""
     title = _find_page_title(topic)
     if title:
         result = _fetch_extract(title)
         if result:
             return result
-    return f"No information found for: {topic}"
+    return ""
+
+
+def research_multi(queries: list[str]) -> str:
+    """
+    Research multiple search queries and combine results.
+    Used when a topic has been decomposed into concrete searchable terms.
+    """
+    results = []
+    seen_titles: set[str] = set()
+
+    for query in queries:
+        title = _find_page_title(query)
+        if title and title not in seen_titles:
+            seen_titles.add(title)
+            extract = _fetch_extract(title, max_chars=3000)
+            if extract:
+                results.append(f"### {title}\n\n{extract}")
+                print(f"[Search] Found: {title}")
+
+    if results:
+        return "\n\n---\n\n".join(results)
+
+    return ""
