@@ -1,1 +1,1 @@
-Can confusion be a practice—something I can deliberately cultivate and refine as a thinking skill?
+The sustainable rhythm of attention: can bounded, cyclical practice on confusion avoid directed attention fatigue while preserving insight?
