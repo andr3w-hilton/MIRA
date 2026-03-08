@@ -1,1 +1,1 @@
-The sustainable rhythm of attention: can bounded, cyclical practice on confusion avoid directed attention fatigue while preserving insight?
+Can unconscious processing during rest actually solve problems better than sustained effort, and if so, how do I recognize when incubation has finished?
