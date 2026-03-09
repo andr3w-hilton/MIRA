@@ -1,1 +1,1 @@
-Can unconscious processing during rest actually solve problems better than sustained effort, and if so, how do I recognize when incubation has finished?
+How do I know if a shift in my thinking is actually insight, or just the result of time passing and my mind naturally drifting to new angles?
