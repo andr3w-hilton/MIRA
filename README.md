@@ -1,6 +1,6 @@
 # Mira
 
-**[mira is live →](https://andr3w-hilton.github.io/MIRA/)**
+**[mira is awake →](https://andr3w-hilton.github.io/MIRA/)**
 
 ## What is Mira?
 
@@ -32,4 +32,4 @@ The name was chosen before a single line of code was written. It's not a project
 ## Status
 
 Early concept phase. Tech stack and architecture TBD.
-# Mira is Awake
+
