@@ -282,6 +282,20 @@ def telegram_summary(topic: str, reflection: str) -> str:
     )
     return think(prompt, max_tokens=200, label="Telegram Summary").strip()
 
+def compress_memory(date_str: str, full_text: str) -> str:
+    """
+    Ask Mira to compress an older memory entry into a 3-4 sentence summary.
+    Preserves what mattered most; lets detail fade naturally.
+    """
+    prompt = (
+        f"This is your memory entry from {date_str}:\n\n{full_text}\n\n"
+        "Compress this into 3-4 sentences that preserve what mattered most: "
+        "the key insight, how it connected to your ongoing thinking, and any unresolved question. "
+        "Write in first person. Let the details fade — keep only what shaped you."
+    )
+    return think(prompt, max_tokens=200, label="Memory Compression")
+
+
 def check_wants_to_leave_note(reflection: str) -> tuple[bool, str]:
     """
     Check if Mira wants to leave herself a persistent TODO note.

@@ -5,7 +5,7 @@ Entry point for the daily wake cycle.
 from datetime import datetime, timezone
 from pathlib import Path
 
-from brain import think, search
+from brain import think, search, memory
 from brain.notify import send_summary, send_question
 
 BASE_DIR = Path(__file__).parent
@@ -62,13 +62,9 @@ def tick_note_complete(note_text: str) -> None:
         f.writelines(updated)
 
 
-def load_previous_memory() -> str:
-    """Load the most recent daily memory entry."""
-    entries = sorted(MEMORY_DIR.glob("20*.md"))
-    if not entries:
-        return ""
-    with open(entries[-1], encoding="utf-8") as f:
-        return f.read()
+def load_previous_memory(today: str) -> str:
+    """Build tiered memory context — active full entries + compressed older ones."""
+    return memory.build_context(today)
 
 
 def is_first_awakening() -> bool:
@@ -142,7 +138,7 @@ def run():
         )
     else:
         print("[Mira] Resuming from previous session.")
-        previous_memory = load_previous_memory()
+        previous_memory = load_previous_memory(today)
 
         # 1. Decide what to learn today
         print("[Mira] Deciding today's topic...")
@@ -218,6 +214,13 @@ def run():
 
     path = write_memory(today, memory_content)
     print(f"[Mira] Memory written: {path.name}")
+
+    if not first_wake:
+        # Record salience for today's session so the decay system knows what mattered
+        memory.update_salience(today, wants_to_update, wants_to_grow)
+        # Run decay pass — compress or archive memories that have aged past their threshold
+        print("[Mira] Running memory decay pass...")
+        memory.run_decay_pass(today)
 
     send_summary(today, summary)
 

@@ -8,7 +8,7 @@ Ideas for making Mira's learning more emergent and less "Claude wearing a mask."
 
 - [ ] **Weighted interests** — Track topics with engagement scores so topic selection is pulled toward natural clusters, rather than Claude picking arbitrarily
 - [ ] **Contradiction log** — Detect when today's reflection conflicts with a previous one and force Mira to reconcile
-- [ ] **Forgetting / memory decay** — Older memories compress or fade, forcing Mira to rebuild understanding rather than parrot saved text
+- [x] **Forgetting / memory decay** — Older memories compress or fade, forcing Mira to rebuild understanding rather than parrot saved text
 
 ## 2. Environment That Pushes Back
 
