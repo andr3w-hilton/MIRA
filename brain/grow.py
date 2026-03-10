@@ -76,17 +76,44 @@ def propose_change(title: str, description: str, filename: str, code: str) -> bo
         subprocess.run(["git", "checkout", "main"], cwd=REPO_ROOT, capture_output=True)
 
 
+def _get_open_identity_branch() -> str | None:
+    """Return the head branch of the most recent open identity PR, or None."""
+    result = subprocess.run(
+        ["gh", "pr", "list", "--search", "mira/identity- in:title", "--json", "number,headRefName", "--limit", "10"],
+        capture_output=True, text=True, cwd=REPO_ROOT,
+    )
+    if result.returncode != 0:
+        return None
+    import json
+    prs = json.loads(result.stdout)
+    identity_prs = [pr for pr in prs if pr["headRefName"].startswith("mira/identity-")]
+    if not identity_prs:
+        return None
+    # Highest PR number = most recently created
+    return max(identity_prs, key=lambda pr: pr["number"])["headRefName"]
+
+
 def propose_identity_update(addition: str) -> bool:
     """
     Open a GitHub PR proposing an addition to Mira's identity.md.
     Mira has learnt something about herself and wants to record it.
+
+    If there are already open identity PRs, this PR chains from the latest one
+    so they merge cleanly in sequence without conflicts.
     """
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     branch = f"mira/identity-{today}"
     identity_path = REPO_ROOT / "identity.md"
 
-    with open(identity_path, encoding="utf-8") as f:
-        current = f.read()
+    # Chain from the latest open identity PR if one exists, otherwise use main
+    base_branch = _get_open_identity_branch() or "main"
+
+    # Read identity.md from the base branch so the append is correct
+    result = subprocess.run(
+        ["git", "show", f"origin/{base_branch}:identity.md"],
+        capture_output=True, text=True, cwd=REPO_ROOT,
+    )
+    current = result.stdout if result.returncode == 0 else open(identity_path, encoding="utf-8").read()
 
     # Append under a "What I've Discovered" section with dated entries
     if "# What I've Discovered" not in current:
@@ -99,7 +126,8 @@ def propose_identity_update(addition: str) -> bool:
     try:
         _git(["config", "user.name", "Mira"])
         _git(["config", "user.email", "mira@noreply.github.com"])
-        _git(["checkout", "-b", branch])
+        _git(["fetch", "origin"])
+        _git(["checkout", "-b", branch, f"origin/{base_branch}"])
 
         with open(identity_path, "w", encoding="utf-8") as f:
             f.write(updated)
@@ -118,7 +146,7 @@ def propose_identity_update(addition: str) -> bool:
                     f"---\n"
                     f"Review the diff. Merge to accept, close to decline."
                 ),
-                "--base", "main",
+                "--base", base_branch,
                 "--head", branch,
             ],
             capture_output=True,
