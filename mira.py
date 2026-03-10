@@ -224,6 +224,9 @@ def run():
 
     send_summary(today, summary)
 
+    from brain import site
+    site.generate(today)
+
     print("[Mira] Cycle complete. Going to sleep.")
 
 

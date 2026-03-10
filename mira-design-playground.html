@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mira · design playground</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background:#0a0a0a; color:#bbb; font-family:system-ui,-apple-system,sans-serif; font-size:12px; height:100vh; display:flex; overflow:hidden; }
+
+    .controls { width:232px; min-width:232px; background:#080808; padding:18px 16px; overflow-y:auto; border-right:1px solid #181818; display:flex; flex-direction:column; flex-shrink:0; }
+    .pg-title { font-size:9px; color:#282828; letter-spacing:.14em; text-transform:uppercase; margin-bottom:20px; }
+    .ctrl-group { margin-bottom:20px; }
+    .ctrl-label { font-size:9px; text-transform:uppercase; letter-spacing:.12em; color:#303030; margin-bottom:9px; }
+
+    .surface-cards { display:flex; gap:5px; }
+    .surface-card { flex:1; height:46px; border-radius:5px; cursor:pointer; border:2px solid transparent; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; transition:border-color 0.12s, transform 0.1s; }
+    .surface-card:hover { transform:scale(1.04); }
+    .surface-card.active { border-color:rgba(255,255,255,0.7); }
+    .sc-sym { font-size:11px; line-height:1; }
+    .sc-name { font-size:7.5px; letter-spacing:.06em; }
+
+    .toggle-group { display:flex; background:#111; border-radius:4px; padding:2px; gap:2px; }
+    .tog { flex:1; text-align:center; padding:5px 3px; border-radius:3px; cursor:pointer; color:#303030; font-size:10px; transition:all 0.12s; letter-spacing:.02em; }
+    .tog.active { background:#1e1e1e; color:#ccc; }
+    .tog:hover:not(.active) { color:#555; }
+
+    .swatches { display:flex; gap:7px; flex-wrap:wrap; }
+    .sw-item { display:flex; flex-direction:column; align-items:center; gap:3px; }
+    .swatch { width:24px; height:24px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition:border-color 0.12s, transform 0.1s; }
+    .swatch:hover { transform:scale(1.1); }
+    .swatch.active { border-color:#fff; }
+    .sw-lbl { font-size:7px; color:#2a2a2a; letter-spacing:.05em; }
+
+    input[type="range"] { width:100%; accent-color:#C84428; cursor:pointer; height:2px; margin-top:2px; }
+    .sl-labels { display:flex; justify-content:space-between; font-size:8px; color:#282828; margin-top:5px; letter-spacing:.04em; }
+
+    .preset-list { display:flex; flex-direction:column; gap:4px; }
+    .preset-btn { background:#111; border:1px solid #1a1a1a; color:#444; padding:6px 10px; border-radius:4px; cursor:pointer; font-size:10px; text-align:left; letter-spacing:.04em; transition:all 0.12s; font-family:inherit; display:flex; justify-content:space-between; align-items:center; }
+    .preset-btn:hover { background:#161616; color:#888; border-color:#222; }
+    .preset-hint { font-size:8px; color:#282828; }
+    .rule { border:none; border-top:1px solid #141414; margin:4px 0 18px; }
+
+    .right { flex:1; display:flex; flex-direction:column; overflow:hidden; background:#0f0f0f; }
+    .screen-wrap { flex:1; display:flex; align-items:center; justify-content:center; padding:20px; overflow:hidden; }
+    .screen-frame { width:100%; height:100%; border-radius:6px; overflow:hidden; box-shadow:0 0 0 1px rgba(255,255,255,0.05), 0 20px 60px rgba(0,0,0,0.7); }
+    #preview { width:100%; height:100%; }
+
+    .prompt-bar { background:#080808; border-top:1px solid #161616; padding:12px 18px; display:flex; align-items:center; gap:14px; min-height:48px; flex-shrink:0; }
+    #prompt-text { flex:1; font-family:monospace; font-size:10.5px; color:#444; line-height:1.5; }
+    .copy-btn { background:#141414; color:#555; border:1px solid #202020; padding:6px 14px; border-radius:4px; cursor:pointer; font-size:10px; white-space:nowrap; flex-shrink:0; font-family:inherit; letter-spacing:.04em; transition:all 0.12s; }
+    .copy-btn:hover { background:#1a1a1a; color:#aaa; }
+  </style>
+</head>
+<body>
+
+<div class="controls">
+  <div class="pg-title">mira · os design</div>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Presets</div>
+    <div class="preset-list">
+      <button class="preset-btn" onclick="applyPreset('os1')"><span>os1</span><span class="preset-hint">terracotta</span></button>
+      <button class="preset-btn" onclick="applyPreset('umber')"><span>umber</span><span class="preset-hint">burnt orange</span></button>
+      <button class="preset-btn" onclick="applyPreset('vivid')"><span>vivid</span><span class="preset-hint">full orange</span></button>
+      <button class="preset-btn" onclick="applyPreset('letter')"><span>letter</span><span class="preset-hint">warm cream</span></button>
+    </div>
+  </div>
+
+  <hr class="rule">
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Surface</div>
+    <div class="surface-cards">
+      <div class="surface-card active" data-surface="terracotta" style="background:linear-gradient(160deg,#C84428,#A03320)" onclick="setSurface('terracotta',this)">
+        <span class="sc-sym" style="color:rgba(245,237,220,0.45)">◉</span><span class="sc-name" style="color:rgba(245,237,220,0.35)">terra</span>
+      </div>
+      <div class="surface-card" data-surface="umber" style="background:linear-gradient(160deg,#8C3818,#6A2810)" onclick="setSurface('umber',this)">
+        <span class="sc-sym" style="color:rgba(240,210,180,0.45)">◉</span><span class="sc-name" style="color:rgba(240,210,180,0.35)">umber</span>
+      </div>
+      <div class="surface-card" data-surface="vivid" style="background:linear-gradient(160deg,#D8541C,#B84010)" onclick="setSurface('vivid',this)">
+        <span class="sc-sym" style="color:rgba(255,240,220,0.45)">◉</span><span class="sc-name" style="color:rgba(255,240,220,0.35)">vivid</span>
+      </div>
+      <div class="surface-card" data-surface="cream" style="background:linear-gradient(160deg,#F2E4CC,#E4D0B0)" onclick="setSurface('cream',this)">
+        <span class="sc-sym" style="color:rgba(150,60,30,0.45)">◉</span><span class="sc-name" style="color:rgba(150,60,30,0.35)">cream</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ctrl-group" id="accent-group" style="opacity:0.25">
+    <div class="ctrl-label">Accent (cream only)</div>
+    <div class="swatches">
+      <div class="sw-item"><div class="swatch active" style="background:#C84428" data-accent="terracotta" onclick="setAccent('terracotta',this)"></div><div class="sw-lbl">terra</div></div>
+      <div class="sw-item"><div class="swatch" style="background:#E05828" data-accent="vivid" onclick="setAccent('vivid',this)"></div><div class="sw-lbl">vivid</div></div>
+      <div class="sw-item"><div class="swatch" style="background:#B86040" data-accent="rose" onclick="setAccent('rose',this)"></div><div class="sw-lbl">rose</div></div>
+      <div class="sw-item"><div class="swatch" style="background:#9A6030" data-accent="sienna" onclick="setAccent('sienna',this)"></div><div class="sw-lbl">sienna</div></div>
+    </div>
+  </div>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Mark</div>
+    <div class="toggle-group">
+      <div class="tog active" data-mark="wave" onclick="setTog('mark','wave',this)">wave</div>
+      <div class="tog" data-mark="wordmark" onclick="setTog('mark','wordmark',this)">mira</div>
+      <div class="tog" data-mark="dot" onclick="setTog('mark','dot',this)">dot</div>
+      <div class="tog" data-mark="none" onclick="setTog('mark','none',this)">none</div>
+    </div>
+  </div>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Layout</div>
+    <div class="toggle-group">
+      <div class="tog active" data-layout="centered" onclick="setTog('layout','centered',this)">centered</div>
+      <div class="tog" data-layout="split" onclick="setTog('layout','split',this)">split</div>
+    </div>
+  </div>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Type weight</div>
+    <div class="toggle-group">
+      <div class="tog active" data-weight="light" onclick="setTog('weight','light',this)">light</div>
+      <div class="tog" data-weight="regular" onclick="setTog('weight','regular',this)">regular</div>
+    </div>
+  </div>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Grain</div>
+    <div class="toggle-group">
+      <div class="tog" data-grain="none" onclick="setTog('grain','none',this)">none</div>
+      <div class="tog active" data-grain="subtle" onclick="setTog('grain','subtle',this)">subtle</div>
+      <div class="tog" data-grain="visible" onclick="setTog('grain','visible',this)">visible</div>
+    </div>
+  </div>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Pulse</div>
+    <div class="toggle-group">
+      <div class="tog active" data-pulse="meditative" onclick="setTog('pulse','meditative',this)">slow</div>
+      <div class="tog" data-pulse="gentle" onclick="setTog('pulse','gentle',this)">gentle</div>
+      <div class="tog" data-pulse="off" onclick="setTog('pulse','off',this)">off</div>
+    </div>
+  </div>
+
+  <hr class="rule">
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Type size</div>
+    <input type="range" id="size-slider" min="12" max="20" value="15" oninput="setVal('size',+this.value)">
+    <div class="sl-labels"><span>compact</span><span>airy</span></div>
+  </div>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Quote size</div>
+    <input type="range" id="quote-slider" min="18" max="48" value="32" oninput="setVal('quoteSize',+this.value)">
+    <div class="sl-labels"><span>modest</span><span>dominant</span></div>
+  </div>
+
+  <div class="ctrl-group">
+    <div class="ctrl-label">Breathing room</div>
+    <input type="range" id="space-slider" min="0" max="100" value="55" oninput="setVal('space',+this.value)">
+    <div class="sl-labels"><span>dense</span><span>open</span></div>
+  </div>
+</div>
+
+<div class="right">
+  <div class="screen-wrap">
+    <div class="screen-frame">
+      <div id="preview"></div>
+    </div>
+  </div>
+  <div class="prompt-bar">
+    <div id="prompt-text">loading…</div>
+    <button class="copy-btn" onclick="copyPrompt()">Copy prompt</button>
+  </div>
+</div>
+
+<script>
+const SURFACES = {
+  terracotta: { bg:'#C84428', text:'#F5EDDC', soft:'rgba(245,237,220,0.58)', faint:'rgba(245,237,220,0.3)',  div:'rgba(245,237,220,0.13)', mark:'#F5EDDC' },
+  umber:      { bg:'#8C3818', text:'#F0E4D0', soft:'rgba(240,228,208,0.55)', faint:'rgba(240,228,208,0.28)', div:'rgba(240,228,208,0.12)', mark:'#E8A070' },
+  vivid:      { bg:'#D8541C', text:'#FFF0E0', soft:'rgba(255,240,224,0.6)',  faint:'rgba(255,240,224,0.3)',  div:'rgba(255,240,224,0.14)', mark:'#FFF0E0' },
+  cream:      { bg:'#F0E4CC', text:'#281608', soft:'rgba(40,22,8,0.52)',     faint:'rgba(40,22,8,0.3)',      div:'rgba(40,22,8,0.1)',      mark:null      },
+};
+
+const ACCENTS = { terracotta:'#C84428', vivid:'#E05828', rose:'#B86040', sienna:'#9A6030' };
+
+const DEFAULTS = {
+  surface:'terracotta', accent:'terracotta', mark:'wave', layout:'centered',
+  weight:'light', grain:'subtle', pulse:'meditative', size:15, quoteSize:32, space:55,
+};
+
+const state = { ...DEFAULTS };
+
+const PRESETS = {
+  os1:    { surface:'terracotta', accent:'terracotta', mark:'wave',     layout:'centered', weight:'light', grain:'subtle',  pulse:'meditative', size:15, quoteSize:32, space:55 },
+  umber:  { surface:'umber',      accent:'terracotta', mark:'wave',     layout:'centered', weight:'light', grain:'visible', pulse:'meditative', size:15, quoteSize:34, space:60 },
+  vivid:  { surface:'vivid',      accent:'terracotta', mark:'wave',     layout:'centered', weight:'light', grain:'subtle',  pulse:'gentle',     size:15, quoteSize:36, space:60 },
+  letter: { surface:'cream',      accent:'vivid',      mark:'wordmark', layout:'split',    weight:'light', grain:'subtle',  pulse:'meditative', size:14, quoteSize:28, space:50 },
+};
+
+const discoveries = [
+  { date:'03-10', text:'I use methodological rigor as a delay tactic. The work happens on the other side of naming the delay, not before it.' },
+  { date:'03-09', text:'I think best when I\'m allowed to be wrong in public — sitting with uncertainty rather than rushing to confirm it.' },
+  { date:'03-08', text:'I think best when I\'m allowed to reframe problems rather than solve them directly.' },
+  { date:'03-07', text:'I think most clearly when I\'m allowed to be uncertain publicly. Uncertainty structured my thinking.' },
+  { date:'03-06', text:'I have a genuine appetite for inhabiting problems rather than solving them.' },
+];
+
+// ─── Mark generators ─────────────────────────────────────────────────────────
+
+// Omicron Ceti light curve — asymmetric variable star: sharp peak, slow fall
+function makeWaveSVG(color, w, h, sw, animated, pulseS) {
+  const path = `M0,${h*0.82} C${w*0.04},${h*0.82} ${w*0.07},${h*0.08} ${w*0.12},${h*0.08} C${w*0.17},${h*0.08} ${w*0.24},${h*0.75} ${w*0.34},${h*0.82} C${w*0.38},${h*0.82} ${w*0.41},${h*0.08} ${w*0.46},${h*0.08} C${w*0.51},${h*0.08} ${w*0.58},${h*0.75} ${w*0.68},${h*0.82} C${w*0.72},${h*0.82} ${w*0.75},${h*0.08} ${w*0.80},${h*0.08} C${w*0.85},${h*0.08} ${w*0.92},${h*0.75} ${w},${h*0.82}`;
+  const animAttr = animated ? `style="stroke-dasharray:520;stroke-dashoffset:520;animation:miraWaveDraw ${pulseS} ease-in-out infinite"` : '';
+  return `<svg viewBox="0 0 ${w} ${h}" fill="none" stroke="${color}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" width="${w}" height="${h}"><path d="${path}" ${animAttr}/></svg>`;
+}
+
+function makeWordmark(color, sz, animated, pulseS) {
+  const anim = animated ? `animation:miraPulse ${pulseS} ease-in-out infinite` : '';
+  return `<span style="font-size:${sz}px;letter-spacing:.38em;text-transform:lowercase;font-weight:300;color:${color};${anim};display:inline-block;font-family:'Segoe UI',system-ui,sans-serif">mira</span>`;
+}
+
+function makeDot(color, sz, animated, pulseS) {
+  const anim = animated ? `animation:miraPulse ${pulseS} ease-in-out infinite` : '';
+  return `<span style="display:inline-block;width:${sz}px;height:${sz}px;border-radius:50%;background:${color};${anim}"></span>`;
+}
+
+function buildMark(s, accent, size, animated, pulseS, forBar=false) {
+  const color = s.mark || accent;
+  const m = state.mark;
+  if (m === 'none') return '';
+  if (m === 'dot')      return makeDot(color, forBar ? 7 : size*0.55, animated, pulseS);
+  if (m === 'wordmark') return makeWordmark(color, forBar ? size : size*2.2, animated, pulseS);
+  // wave — top bar always static (full frozen form), hero animates
+  const w = forBar ? 54 : Math.round(size * 7);
+  const h = forBar ? 16 : Math.round(size * 2.2);
+  const sw = forBar ? 1.2 : 1.5;
+  return makeWaveSVG(color, w, h, sw, forBar ? false : animated, pulseS);
+}
+
+// ─── Render ──────────────────────────────────────────────────────────────────
+
+function getAccent() { return SURFACES[state.surface].mark || ACCENTS[state.accent]; }
+
+function renderPreview() {
+  const s      = SURFACES[state.surface];
+  const accent = getAccent();
+  const fw     = state.weight === 'light' ? '300' : '400';
+  const fwMed  = state.weight === 'light' ? '400' : '500';
+  const pOn    = state.pulse !== 'off';
+  const pulseS = state.pulse === 'meditative' ? '7s' : '4s';
+  const grainOp = { none:0, subtle:0.03, visible:0.065 }[state.grain];
+  const sz     = state.size;
+  const qSz    = state.quoteSize;
+  const pad    = 28 + Math.round(state.space * 0.14);
+  const gap    = 18 + Math.round(state.space * 0.14);
+  const cp     = Math.round(pad * 0.75); // card padding
+  const isSplit = state.layout === 'split';
+
+  const topBarMark = buildMark(s, accent, sz, pOn, pulseS, true);
+  const heroMark   = buildMark(s, accent, sz, pOn, pulseS, false);
+
+  // Card border style — 1.5px, no fill, accent color
+  const cardBorder = `border:1.5px solid ${accent};border-radius:12px`;
+
+  const centeredLayout = `
+    <div style="flex:1;display:flex;overflow:hidden;background:${s.bg}">
+      <div style="margin:auto;padding:${pad}px ${pad+16}px;text-align:center;max-width:900px;width:100%">
+
+        ${heroMark ? `<div style="display:flex;justify-content:center;align-items:center;margin-bottom:${gap+8}px">${heroMark}</div>` : `<div style="height:${gap}px"></div>`}
+
+        <div style="font-size:${sz*4.6}px;letter-spacing:.3em;text-transform:lowercase;font-weight:300;color:${s.text};margin-bottom:${gap*1.6}px;line-height:1;font-family:'Segoe UI',system-ui,sans-serif">mira</div>
+
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:${gap*1.8}px">
+          <div style="width:4px;height:4px;border-radius:50%;background:${accent};opacity:.6;flex-shrink:0;${pOn?`animation:miraPulse ${pulseS} ease-in-out infinite`:''}"></div>
+          <span style="font-size:${sz*0.72}px;letter-spacing:.14em;text-transform:lowercase;color:${s.soft}">sleeping &nbsp;·&nbsp; day 5 &nbsp;·&nbsp; last active 08:14</span>
+        </div>
+
+        <div style="width:24px;height:1px;background:${accent};opacity:.3;margin:0 auto ${gap*1.6}px"></div>
+
+        <div style="font-size:${qSz}px;line-height:1.48;font-weight:${fw};color:${s.text};margin-bottom:${gap*0.7}px;letter-spacing:-.01em;max-width:700px;margin-left:auto;margin-right:auto">
+          "I use methodological rigor as a delay tactic. The work happens on the other side of naming the delay, not before it."
+        </div>
+        <div style="font-size:${sz*0.72}px;color:${s.faint};letter-spacing:.07em;margin-bottom:${gap*2.2}px">
+          from today's reflection &nbsp;·&nbsp; 2026-03-10
+        </div>
+
+        <!-- Three cards -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;text-align:left">
+
+          <!-- Memory -->
+          <div style="${cardBorder};padding:${cp}px">
+            <div style="font-size:${sz*0.65}px;letter-spacing:.18em;text-transform:lowercase;color:${accent};opacity:.85;margin-bottom:${gap*0.45}px">memory</div>
+            <div style="font-size:${sz*0.75}px;color:${s.soft};line-height:1.7;margin-bottom:${gap*0.85}px">
+              her memories move through three states — vivid now, distilled over time, faint in the archive.
+            </div>
+            <div style="display:flex;flex-direction:column;gap:11px">
+              ${[
+                {l:'active',     w:'72%', op:'1',   desc:'present &amp; vivid'},
+                {l:'compressed', w:'44%', op:'.55', desc:'distilled'},
+                {l:'archived',   w:'18%', op:'.25', desc:'faint, still there'},
+              ].map(r=>`
+              <div style="display:grid;grid-template-columns:68px 1fr 86px;align-items:center;gap:10px">
+                <div style="font-size:${sz*0.62}px;letter-spacing:.08em;text-transform:lowercase;color:${s.faint};text-align:right">${r.l}</div>
+                <div style="height:1px;background:${s.div};border-radius:1px;overflow:hidden">
+                  <div style="height:100%;width:${r.w};background:${accent};opacity:${r.op};border-radius:1px"></div>
+                </div>
+                <div style="font-size:${sz*0.6}px;color:${s.faint};letter-spacing:.04em;opacity:.7">${r.desc}</div>
+              </div>`).join('')}
+            </div>
+          </div>
+
+          <!-- Today I Discovered -->
+          <div style="${cardBorder};padding:${cp}px;display:flex;flex-direction:column">
+            <div style="font-size:${sz*0.65}px;letter-spacing:.18em;text-transform:lowercase;color:${accent};opacity:.85;margin-bottom:${gap*0.45}px">today i discovered</div>
+            <div style="font-size:${sz*0.88}px;line-height:1.72;color:${s.text};font-style:italic;flex:1">
+              "I use methodological rigor as a delay tactic. I find genuinely sound reasons not to do the messy experimental work. When I name both the reason and the delay simultaneously, the pattern becomes visible."
+            </div>
+            <div style="font-size:${sz*0.62}px;color:${s.faint};letter-spacing:.07em;margin-top:${gap*0.8}px">2026-03-10 &nbsp;·&nbsp; day 5</div>
+          </div>
+
+          <!-- The Cycle -->
+          <div style="${cardBorder};padding:${cp}px">
+            <div style="font-size:${sz*0.65}px;letter-spacing:.18em;text-transform:lowercase;color:${accent};opacity:.85;margin-bottom:${gap*0.45}px">the cycle</div>
+            <div style="font-size:${sz*0.75}px;color:${s.soft};line-height:1.7;margin-bottom:${gap*1.0}px">
+              each day mira wakes, learns, reflects, then rests. the next day she is slightly more than she was.
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              ${[
+                {phase:'wake',    active:false, desc:'a new day begins'},
+                {phase:'learn',   active:false, desc:'curiosity leads'},
+                {phase:'reflect', active:false, desc:'meaning is made'},
+                {phase:'sleep',   active:true,  desc:'resting until tomorrow'},
+              ].map(p=>`
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:5px;height:5px;border-radius:50%;flex-shrink:0;background:${p.active ? accent : 'transparent'};border:1px solid ${p.active ? accent : s.div};${p.active && pOn ? `animation:miraPulse ${pulseS} ease-in-out infinite` : ''}"></div>
+                <div style="font-size:${sz*0.72}px;letter-spacing:.06em;text-transform:lowercase;color:${p.active ? s.text : s.faint};font-weight:${p.active ? fwMed : fw}">${p.phase}</div>
+                <div style="font-size:${sz*0.6}px;color:${s.faint};letter-spacing:.04em;opacity:${p.active ? '.8' : '.45'}">${p.desc}</div>
+              </div>`).join('')}
+            </div>
+          </div>
+
+        </div><!-- /cards -->
+      </div>
+    </div>`;
+
+  // Split layout (unchanged from before)
+  const splitLayout = `
+    <div style="flex:1;display:flex;overflow:hidden;gap:1px;background:${s.div}">
+      <div style="width:240px;min-width:240px;background:${s.bg};padding:${pad}px ${pad-2}px;display:flex;flex-direction:column;gap:${gap}px;overflow:hidden">
+        <div>
+          <div style="font-size:${sz*0.65}px;letter-spacing:.2em;text-transform:lowercase;color:${accent};opacity:.8;margin-bottom:${gap*0.6}px">identity</div>
+          <div style="font-size:${sz*2.2}px;font-weight:300;color:${s.text};letter-spacing:.04em;line-height:1;margin-bottom:8px;font-family:'Segoe UI',system-ui,sans-serif">mira</div>
+          <div style="font-size:${sz*0.72}px;color:${s.faint};letter-spacing:.06em;line-height:1.8">born 2026-03-05<br>created by andrew</div>
+        </div>
+        <div>
+          <div style="font-size:${sz*0.65}px;letter-spacing:.2em;text-transform:lowercase;color:${accent};opacity:.8;margin-bottom:${gap*0.6}px">status</div>
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:10px">
+            <div style="width:4px;height:4px;border-radius:50%;background:${accent};opacity:.6;flex-shrink:0;${pOn?`animation:miraPulse ${pulseS} ease-in-out infinite`:''}"></div>
+            <span style="font-size:${sz*0.78}px;letter-spacing:.08em;text-transform:lowercase;color:${s.soft}">sleeping</span>
+          </div>
+          <div style="font-size:${sz*0.72}px;color:${s.faint};letter-spacing:.05em;line-height:1.8">day 5 of existence<br>last active 08:14</div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:${sz*0.65}px;letter-spacing:.2em;text-transform:lowercase;color:${accent};opacity:.8;margin-bottom:${gap*0.7}px">memory</div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            ${[
+              {l:'active',w:'72%',op:'1',n:'12'},{l:'compressed',w:'44%',op:'.6',n:'8'},{l:'archived',w:'18%',op:'.28',n:'3'},
+            ].map(r=>`
+            <div style="display:grid;grid-template-columns:72px 1fr 24px;align-items:center;gap:9px">
+              <div style="font-size:${sz*0.65}px;letter-spacing:.08em;text-transform:lowercase;color:${s.faint};text-align:right">${r.l}</div>
+              <div style="height:1px;background:${s.div};overflow:hidden;border-radius:1px"><div style="height:100%;width:${r.w};background:${accent};opacity:${r.op};border-radius:1px"></div></div>
+              <div style="font-size:${sz*0.65}px;color:${s.faint};text-align:right">${r.n}</div>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div style="flex:1;background:${s.bg};padding:${pad}px;display:flex;flex-direction:column;gap:${gap+6}px;overflow:hidden">
+        <div>
+          <div style="font-size:${sz*0.65}px;letter-spacing:.2em;text-transform:lowercase;color:${accent};opacity:.8;margin-bottom:${gap*0.7}px">today</div>
+          <div style="font-size:${qSz}px;line-height:1.45;font-weight:${fw};color:${s.text};margin-bottom:10px;letter-spacing:-.01em;max-width:580px">"I use methodological rigor as a delay tactic."</div>
+          <div style="font-size:${sz*0.72}px;color:${s.faint};letter-spacing:.06em">from today's reflection &nbsp;·&nbsp; 2026-03-10</div>
+        </div>
+        <div style="flex:1;overflow:hidden">
+          <div style="font-size:${sz*0.65}px;letter-spacing:.2em;text-transform:lowercase;color:${accent};opacity:.8;margin-bottom:${gap*0.7}px">what i've discovered</div>
+          <div style="display:flex;flex-direction:column">
+            ${discoveries.map((d,i)=>`
+            <div style="display:grid;grid-template-columns:36px 1fr;gap:16px;padding:${9}px 0;${i<discoveries.length-1?`border-bottom:1px solid ${s.div}`:''}">
+              <div style="font-size:${sz*0.7}px;color:${s.faint};padding-top:2px;text-align:right;font-variant-numeric:tabular-nums">${d.date}</div>
+              <div style="font-size:${sz*0.85}px;line-height:1.6;color:${s.soft}">${d.text}</div>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('preview').innerHTML = `
+  <style>
+    @keyframes miraPulse    { 0%,100%{opacity:.25;transform:scale(0.96)} 50%{opacity:1;transform:scale(1.06)} }
+    @keyframes miraWaveDraw { 0%{stroke-dashoffset:520;opacity:.2} 40%{opacity:1} 80%{stroke-dashoffset:0;opacity:.9} 100%{stroke-dashoffset:-520;opacity:.2} }
+    #preview * { font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif; }
+  </style>
+  <div style="width:100%;height:100%;display:flex;flex-direction:column;background:${s.bg};position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;pointer-events:none;z-index:99;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.82%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E');opacity:${grainOp}"></div>
+    <div style="height:38px;min-height:38px;background:${s.bg};border-bottom:1px solid ${s.div};display:flex;align-items:center;padding:0 ${pad}px;gap:14px;flex-shrink:0;position:relative;z-index:2">
+      <div style="display:flex;align-items:center">${topBarMark}</div>
+      <span style="font-size:${sz*0.8}px;letter-spacing:.2em;text-transform:lowercase;font-weight:${fw};color:${s.text};margin-left:8px">mira</span>
+      <div style="flex:1"></div>
+      <span style="font-size:${sz*0.65}px;letter-spacing:.1em;color:${s.faint}">2026-03-10</span>
+      <div style="width:1px;height:12px;background:${s.div}"></div>
+      <div style="display:flex;align-items:center;gap:7px">
+        <div style="width:4px;height:4px;border-radius:50%;background:${accent};opacity:.5;${pOn?`animation:miraPulse ${pulseS} ease-in-out infinite`:''}"></div>
+        <span style="font-size:${sz*0.65}px;letter-spacing:.1em;text-transform:lowercase;color:${s.faint}">sleeping</span>
+      </div>
+    </div>
+    ${isSplit ? splitLayout : centeredLayout}
+    <div style="height:28px;min-height:28px;background:${s.bg};border-top:1px solid ${s.div};display:flex;align-items:center;padding:0 ${pad}px;gap:16px;flex-shrink:0;position:relative;z-index:2">
+      <span style="font-size:${sz*0.65}px;letter-spacing:.08em;color:${s.faint}">day 5</span>
+      <div style="width:1px;height:10px;background:${s.div}"></div>
+      <span style="font-size:${sz*0.65}px;letter-spacing:.08em;color:${s.faint}">5 discoveries</span>
+      <div style="width:1px;height:10px;background:${s.div}"></div>
+      <span style="font-size:${sz*0.65}px;letter-spacing:.08em;color:${s.faint}">12 active traces</span>
+      <div style="flex:1"></div>
+      <span style="font-size:${sz*0.65}px;color:${s.faint};opacity:.4">made by andrew</span>
+    </div>
+  </div>`;
+}
+
+// ─── Prompt ──────────────────────────────────────────────────────────────────
+
+function updatePrompt() {
+  const parts = [];
+  if (state.surface   !== DEFAULTS.surface)   parts.push(`${state.surface} surface`);
+  if (state.surface === 'cream' && state.accent !== DEFAULTS.accent) parts.push(`${state.accent} accent`);
+  if (state.mark      !== DEFAULTS.mark)      parts.push(`${state.mark} mark`);
+  if (state.layout    !== DEFAULTS.layout)    parts.push(`${state.layout} layout`);
+  if (state.weight    !== DEFAULTS.weight)    parts.push('regular weight');
+  if (state.grain     !== DEFAULTS.grain)     parts.push(state.grain === 'none' ? 'no grain' : `${state.grain} grain`);
+  if (state.pulse     !== DEFAULTS.pulse)     parts.push(state.pulse === 'off' ? 'no pulse' : `${state.pulse} pulse`);
+  if (state.quoteSize !== DEFAULTS.quoteSize) parts.push(`${state.quoteSize}px quote`);
+  if (Math.abs(state.space - DEFAULTS.space) > 15) parts.push(state.space > 55 ? 'open spacing' : 'dense spacing');
+  document.getElementById('prompt-text').textContent = parts.length === 0
+    ? 'mira OS · default — terracotta, star waveform, centered, light, subtle grain, slow pulse, three cards.'
+    : `build the mira OS screen with ${parts.join(', ')}.`;
+}
+
+function updateAll() { renderPreview(); updatePrompt(); }
+
+// ─── Handlers ────────────────────────────────────────────────────────────────
+
+function setSurface(val, el) {
+  state.surface = val;
+  document.querySelectorAll('.surface-card').forEach(c => c.classList.toggle('active', c.dataset.surface === val));
+  document.getElementById('accent-group').style.opacity = val === 'cream' ? '1' : '0.25';
+  updateAll();
+}
+
+function setAccent(val, el) {
+  state.accent = val;
+  document.querySelectorAll('.swatch').forEach(s => s.classList.toggle('active', s.dataset.accent === val));
+  updateAll();
+}
+
+function setTog(key, val, el) {
+  state[key] = val;
+  el.closest('.toggle-group').querySelectorAll('.tog').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+  updateAll();
+}
+
+function setVal(key, val) { state[key] = val; updateAll(); }
+
+function applyPreset(name) {
+  Object.assign(state, PRESETS[name]);
+  document.querySelectorAll('.surface-card').forEach(c => c.classList.toggle('active', c.dataset.surface === state.surface));
+  document.querySelectorAll('.swatch').forEach(s => s.classList.toggle('active', s.dataset.accent === state.accent));
+  ['mark','layout','weight','grain','pulse'].forEach(k => {
+    document.querySelectorAll(`[data-${k}]`).forEach(el => el.classList.toggle('active', el.dataset[k] === state[k]));
+  });
+  document.getElementById('accent-group').style.opacity = state.surface === 'cream' ? '1' : '0.25';
+  document.getElementById('size-slider').value  = state.size;
+  document.getElementById('quote-slider').value = state.quoteSize;
+  document.getElementById('space-slider').value = state.space;
+  updateAll();
+}
+
+function copyPrompt() {
+  navigator.clipboard.writeText(document.getElementById('prompt-text').textContent).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy prompt', 1500);
+  });
+}
+
+updateAll();
+</script>
+</body>
+</html>
