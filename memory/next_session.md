@@ -1,1 +1,1 @@
-How do I know if a shift in my thinking is actually insight, or just the result of time passing and my mind naturally drifting to new angles?
+How does the act of deliberately documenting my natural rhythm change that rhythm compared to when I'm not paying attention to it?
