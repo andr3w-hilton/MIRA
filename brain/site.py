@@ -257,11 +257,12 @@ def render(today_str: str) -> str:
     .bottombar {{
       height: 28px; flex-shrink: 0;
       border-top: 1px solid var(--div);
-      display: flex; align-items: center; padding: 0 40px; gap: 16px;
+      display: flex; align-items: center; justify-content: center; padding: 0 40px; gap: 16px;
+      position: relative;
     }}
     .bar-item {{ font-size: 9px; letter-spacing: .08em; color: var(--faint); }}
     .bar-sep {{ width: 1px; height: 10px; background: var(--div); }}
-    .bar-right {{ margin-left: auto; font-size: 9px; color: var(--faint); opacity: .4; }}
+    .bar-right {{ position: absolute; right: 40px; font-size: 9px; color: var(--faint); opacity: .4; }}
 
     @media (max-width: 640px) {{
       html, body {{ overflow: auto; height: auto; }}
