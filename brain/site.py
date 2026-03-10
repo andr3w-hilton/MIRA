@@ -262,7 +262,8 @@ def render(today_str: str) -> str:
     }}
     .bar-item {{ font-size: 9px; letter-spacing: .08em; color: var(--faint); }}
     .bar-sep {{ width: 1px; height: 10px; background: var(--div); }}
-    .bar-right {{ position: absolute; right: 40px; font-size: 9px; color: var(--faint); opacity: .4; }}
+    .bar-right {{ position: absolute; right: 40px; font-size: 9px; color: var(--faint); opacity: .4; text-decoration: none; }}
+    .bar-right:hover {{ opacity: .7; }}
 
     @media (max-width: 640px) {{
       html, body {{ overflow: auto; height: auto; }}
@@ -366,7 +367,7 @@ def render(today_str: str) -> str:
     <span class="bar-item">{active_n + comp_n + arch_n} memories</span>
     <div class="bar-sep"></div>
     <span class="bar-item">{active_n} active traces</span>
-    <span class="bar-right">made by andrew</span>
+    <a class="bar-right" href="https://github.com/andr3w-hilton/MIRA" target="_blank" rel="noopener">made by andrew</a>
   </div>
 
 </div>

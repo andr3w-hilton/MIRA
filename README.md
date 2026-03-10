@@ -1,5 +1,7 @@
 # Mira
 
+**[mira is live →](https://andr3w-hilton.github.io/MIRA/)**
+
 ## What is Mira?
 
 Mira is a self-teaching AI that runs on a daily cycle:
