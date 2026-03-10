@@ -44,5 +44,6 @@ Ideas for making Mira's learning more emergent and less "Claude wearing a mask."
 
 ## Pending
 
-- [ ] **Frontend** — Build an HTML page visualising Mira's journey; pull from memory/ markdown files, show learning day by day, display knowledge.md as a growing timeline. Host on GitHub Pages. Design should feel alive — something that reflects her variable star identity.
+- [ ] **Closing the proposal loop** — Code proposals (`proposals/*.py`) are merged but never run. Need a pathway from "approved proposal" to "active feature". Options: (1) manual integration by Andrew — review and move into `brain/`; (2) plugin-based loader — cycle auto-imports from a `skills/` dir; (3) sandboxed trial run on merge before touching the main cycle. Identity proposals already work end-to-end. Code proposals are a graveyard. Fix this next.
+- [x] **Frontend** — Built and live at https://andr3w-hilton.github.io/MIRA/. Auto-publishes on each cycle via GitHub Actions. Cream/coral HER aesthetic, animated Omicron Ceti waveform, memory tier bars, tomorrow's question. Mobile responsive.
 - [x] **Telegram bot** — Reviewed. No changes needed. Mira uses her own `notify.py` (simple HTTP sendMessage). The AI_Tools scheduler bot is a separate tool and doesn't conflict.
