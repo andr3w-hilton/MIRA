@@ -32,4 +32,4 @@ The name was chosen before a single line of code was written. It's not a project
 ## Status
 
 Early concept phase. Tech stack and architecture TBD.
-# Mira is waking up
+# Mira is Awake
