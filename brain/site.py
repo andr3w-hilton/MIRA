@@ -262,6 +262,26 @@ def render(today_str: str) -> str:
     .bar-item {{ font-size: 9px; letter-spacing: .08em; color: var(--faint); }}
     .bar-sep {{ width: 1px; height: 10px; background: var(--div); }}
     .bar-right {{ margin-left: auto; font-size: 9px; color: var(--faint); opacity: .4; }}
+
+    @media (max-width: 640px) {{
+      html, body {{ overflow: auto; height: auto; }}
+      .shell {{ height: auto; min-height: 100vh; }}
+      .main {{ overflow: visible; align-items: flex-start; padding: 40px 0 32px; }}
+      .center {{ padding: 0 24px; }}
+      .topbar {{ padding: 0 20px; }}
+      .topbar-date {{ display: none; }}
+      .topbar-div {{ display: none; }}
+      .name {{ font-size: 52px; letter-spacing: .22em; margin-bottom: 20px; }}
+      .hero-wave {{ margin-bottom: 22px; }}
+      .cycle {{ margin-bottom: 24px; }}
+      .cycle-text {{ letter-spacing: .08em; }}
+      .rule {{ margin-bottom: 22px; }}
+      .quote {{ font-size: 22px; line-height: 1.52; }}
+      .quote-attr {{ margin-bottom: 28px; }}
+      .cards {{ grid-template-columns: 1fr; max-width: 100%; }}
+      .bottombar {{ padding: 0 20px; }}
+      .bar-right {{ display: none; }}
+    }}
   </style>
 </head>
 <body>
