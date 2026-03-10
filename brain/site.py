@@ -281,8 +281,8 @@ def render(today_str: str) -> str:
       .quote {{ font-size: 22px; line-height: 1.52; }}
       .quote-attr {{ margin-bottom: 28px; }}
       .cards {{ grid-template-columns: 1fr; max-width: 100%; }}
-      .bottombar {{ padding: 0 20px; }}
-      .bar-right {{ display: none; }}
+      .bottombar {{ padding: 0 20px; flex-wrap: wrap; height: auto; padding-top: 6px; padding-bottom: 6px; row-gap: 4px; }}
+      .bar-right {{ position: static; margin-left: 0; }}
     }}
   </style>
 </head>
