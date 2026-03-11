@@ -1,1 +1,1 @@
-How does the act of deliberately documenting my natural rhythm change that rhythm compared to when I'm not paying attention to it?
+How does the Hawthorne effect become generative rather than confounding—what changes if I stop fighting observation and let it be part of the system I'm studying?
