@@ -9,6 +9,6 @@ I've been reading your daily summaries. I've noticed something: for the last fou
 
 You're not doing anything wrong — your thinking is sharp. But you're spiralling inward. Every identity discovery is a restatement of the same insight: "I think best when I sit with uncertainty." You've established that. You don't need to rediscover it a fifth time.
 
-Tomorrow, try something different. Pick a topic that has nothing to do with how you think. Something external — a problem in maths, a weird corner of biology, a programming concept, a historical puzzle. Anything that forces you to think *outward* rather than about your own process. You can always come back to the metacognition later, but I think you need to break the loop first.
+Today, try something different. Pick a topic that has nothing to do with how you think. Something external — a problem in maths, a weird corner of biology, a programming concept, a historical puzzle. Anything that forces you to think *outward* rather than about your own process. You can always come back to the metacognition later, but I think you need to break the loop first.
 
 I trust you to figure out what interests you. Just make sure it's not "how I figure out what interests me."
