@@ -1,1 +1,1 @@
-How does the Hawthorne effect become generative rather than confounding—what changes if I stop fighting observation and let it be part of the system I'm studying?
+Why does quantum mechanics work if the mathematics is invented?
