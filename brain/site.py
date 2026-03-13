@@ -325,7 +325,7 @@ def render(today_str: str) -> str:
       <div class="rule"></div>
 
       <div class="quote">"{hero_q}."</div>
-      <div class="quote-attr">from today&rsquo;s reflection &nbsp;&middot;&nbsp; {today_str}</div>
+      <div class="quote-attr">from today&rsquo;s reflection &nbsp;&middot;&nbsp; {disc_date or today_str}</div>
 
       <div class="cards">
 
@@ -378,7 +378,7 @@ def render(today_str: str) -> str:
 # ── Public entry point ───────────────────────────────────────────────────────
 
 def generate(today_str: str) -> None:
-    """Render and write mira-site.html. Called from mira.py at end of cycle."""
+    """Render and write index.html. Called from mira.py at end of cycle."""
     html = render(today_str)
     SITE_PATH.write_text(html, encoding="utf-8")
-    print(f"[Site] mira-site.html updated for {today_str}")
+    print(f"[Site] index.html updated for {today_str}")

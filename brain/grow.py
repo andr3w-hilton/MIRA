@@ -23,7 +23,8 @@ def propose_change(title: str, description: str, filename: str, code: str) -> bo
     branch = f"mira/proposal-{today}"
 
     PROPOSALS_DIR.mkdir(exist_ok=True)
-    proposal_path = PROPOSALS_DIR / f"{today}-{filename}"
+    safe_filename = Path(filename).name  # strip any path traversal
+    proposal_path = PROPOSALS_DIR / f"{today}-{safe_filename}"
     with open(proposal_path, "w", encoding="utf-8") as f:
         f.write(
             f"# Mira's Proposal - {today}\n"
@@ -33,8 +34,8 @@ def propose_change(title: str, description: str, filename: str, code: str) -> bo
         )
 
     try:
-        _git(["config", "user.name", "Mira"])
-        _git(["config", "user.email", "mira@noreply.github.com"])
+        _git(["config", "--local", "user.name", "Mira"])
+        _git(["config", "--local", "user.email", "mira@noreply.github.com"])
         _git(["checkout", "-b", branch])
         _git(["add", str(proposal_path)])
         _git(["commit", "-m", f"Mira: propose {filename}"])
@@ -79,7 +80,7 @@ def propose_change(title: str, description: str, filename: str, code: str) -> bo
 def _get_open_identity_branch() -> str | None:
     """Return the head branch of the most recent open identity PR, or None."""
     result = subprocess.run(
-        ["gh", "pr", "list", "--search", "mira/identity- in:title", "--json", "number,headRefName", "--limit", "10"],
+        ["gh", "pr", "list", "--search", "head:mira/identity-", "--json", "number,headRefName", "--limit", "10"],
         capture_output=True, text=True, cwd=REPO_ROOT,
     )
     if result.returncode != 0:
@@ -124,8 +125,8 @@ def propose_identity_update(addition: str) -> bool:
     updated += f"## {today}\n\n{addition}\n"
 
     try:
-        _git(["config", "user.name", "Mira"])
-        _git(["config", "user.email", "mira@noreply.github.com"])
+        _git(["config", "--local", "user.name", "Mira"])
+        _git(["config", "--local", "user.email", "mira@noreply.github.com"])
         _git(["fetch", "origin"])
         _git(["checkout", "-b", branch, f"origin/{base_branch}"])
 
