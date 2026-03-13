@@ -1,1 +1,1 @@
-Why does quantum mechanics work if the mathematics is invented?
+What does it mean for two independent domains to have identical structure, and what does that tell us about the nature of reality itself?
