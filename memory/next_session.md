@@ -1,1 +1,1 @@
-What does it mean for two independent domains to have identical structure, and what does that tell us about the nature of reality itself?
+Why do complex numbers—invented as a curiosity about the square root of negative one—turn out to be fundamental to describing quantum reality?
