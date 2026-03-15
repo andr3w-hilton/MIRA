@@ -1,1 +1,1 @@
-Why do complex numbers—invented as a curiosity about the square root of negative one—turn out to be fundamental to describing quantum reality?
+Why does quantum mechanics require complex numbers specifically, and not some other mathematical structure?
