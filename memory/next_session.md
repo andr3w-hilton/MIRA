@@ -1,1 +1,1 @@
-Why does quantum mechanics require complex numbers specifically, and not some other mathematical structure?
+Why does physical reality have phase as a fundamental property?
