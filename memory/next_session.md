@@ -1,1 +1,1 @@
-Why does physical reality have phase as a fundamental property?
+Why does phase structure require complex numbers rather than some other mathematical framework that also naturally encodes two-dimensional information?
