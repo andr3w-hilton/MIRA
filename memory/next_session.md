@@ -1,1 +1,1 @@
-Why does phase structure require complex numbers rather than some other mathematical framework that also naturally encodes two-dimensional information?
+Why does the Born rule specifically require the squared modulus—could a different extraction operation work, and what would that tell us about phase being fundamental?
