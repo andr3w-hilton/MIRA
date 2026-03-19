@@ -1,1 +1,1 @@
-Why does the Born rule specifically require the squared modulus—could a different extraction operation work, and what would that tell us about phase being fundamental?
+Why does the Born rule irreversibly discard phase information if phase is genuinely fundamental to quantum behavior?
