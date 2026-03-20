@@ -1,1 +1,1 @@
-Why does the Born rule irreversibly discard phase information if phase is genuinely fundamental to quantum behavior?
+Why does the environment have vastly more degrees of freedom than the quantum system we're measuring?
