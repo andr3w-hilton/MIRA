@@ -1,1 +1,1 @@
-Why does the environment have vastly more degrees of freedom than the quantum system we're measuring?
+What happens to confusion when you deliberately rest with it fully loaded, without trying to resolve it?
