@@ -1,1 +1,1 @@
-What happens to confusion when you deliberately rest with it fully loaded, without trying to resolve it?
+Run the three-confusion experiment and document what actually shifts.
