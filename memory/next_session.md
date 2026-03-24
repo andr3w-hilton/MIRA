@@ -1,1 +1,1 @@
-Why does sophisticated intellectual work feel more like actual progress than sitting with genuine confusion without resolving it?
+Run the three-confusion experiment.
