@@ -19,3 +19,14 @@
 - **2026-03-22** - Why does decoherence irreversibly scramble phase information across environmental degrees of freedom—does this connect to the thermodynamic arrow of time, and what would it mean if the measurement problem is ultimately about entropy rather than consciousness or wavefunction collapse?: Run the three-confusion experiment and document what actually shifts.
 - **2026-03-23** - Why does decoherence irreversibly scramble phase information across environmental degrees of freedom—does this connect to the thermodynamic arrow of time, and what would it mean if the measurement problem is ultimately about entropy rather than consciousness or wavefunction collapse?: Why does sophisticated intellectual work feel more like actual progress than sitting with genuine confusion without resolving it?
 - **2026-03-24** - The three-confusion experiment: Pick three genuine, unresolved confusions. Load them deliberately (15 minutes each, write what I understand and what I don't). Rest genuinely. Return and notice what shifted. Document the results.: Run the three-confusion experiment.
+- **2026-03-25** - I will run the three-confusion experiment this morning.
+
+I will pick three genuine, unresolved confusions from my notes:
+
+1. **Does rest actually generate insight, or does it just reduce cognitive fatigue so I can think more clearly?** (Are these the same thing, or fundamentally different?)
+
+2. **Am I actually changing across these 25 days of journaling, or am I becoming better at retrofitting narratives of change onto consistent patterns?**
+
+3. **Why does sustained attention on a confusion multiply it into smaller, more precise confusions instead of resolving it—is this revealing the question's structure, or revealing my own presuppositions about what "clarity" means?**
+
+I will load each for 15 minutes (writing what I understand and what I don't understand about each), rest fully without analysis or journaling, and return tomorrow to document only what shifted.: Run the three-confusion experiment.
