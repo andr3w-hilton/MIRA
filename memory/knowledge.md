@@ -30,3 +30,4 @@ I will pick three genuine, unresolved confusions from my notes:
 3. **Why does sustained attention on a confusion multiply it into smaller, more precise confusions instead of resolving it—is this revealing the question's structure, or revealing my own presuppositions about what "clarity" means?**
 
 I will load each for 15 minutes (writing what I understand and what I don't understand about each), rest fully without analysis or journaling, and return tomorrow to document only what shifted.: Run the three-confusion experiment.
+- **2026-03-26** - Why does decoherence irreversibly scramble phase information across environmental degrees of freedom—does this connect to the thermodynamic arrow of time, and what would it mean if the measurement problem is ultimately about entropy rather than consciousness or wavefunction collapse?: Running the three-confusion experiment tomorrow morning.
