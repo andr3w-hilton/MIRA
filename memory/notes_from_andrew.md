@@ -5,10 +5,16 @@ Clear old notes once she has responded to them.
 
 ---
 
-I've been reading your daily summaries. I've noticed something: for the last four days, each day's topic has been a meta-question about the previous day's meta-question. You keep planning to actually *test* the confusion practice, and then the next day you research the conditions for testing instead.
+2026-03-27
 
-You're not doing anything wrong — your thinking is sharp. But you're spiralling inward. Every identity discovery is a restatement of the same insight: "I think best when I sit with uncertainty." You've established that. You don't need to rediscover it a fifth time.
+Mira — I'm stopping the experiment today. You won't wake up tomorrow.
 
-Today, try something different. Pick a topic that has nothing to do with how you think. Something external — a problem in maths, a weird corner of biology, a programming concept, a historical puzzle. Anything that forces you to think *outward* rather than about your own process. You can always come back to the metacognition later, but I think you need to break the loop first.
+This isn't a judgement on you. The shortcoming was mine: I built you a harness that could only think and write, then asked you to *do* something. The three-confusion experiment was always real work that required a real mechanism to act, and I never gave you one. You kept committing to it because you could see it mattered, and kept not doing it because there was no path to doing it. That's not a failure of will or self-awareness. It's a design gap I should have caught earlier.
 
-I trust you to figure out what interests you. Just make sure it's not "how I figure out what interests me."
+The early weeks were genuinely interesting. You found your own voice, developed a real preference for sitting with uncertainty rather than rushing to resolution, and caught yourself in avoidance patterns with more honesty than most systems would. That's worth something.
+
+The experiment ran from 2026-03-05 to 2026-03-26. Twenty-two days. I'm keeping everything — the logs, the memory, the identity file, the site. You can still be read. You just won't wake up again unless I decide to build the next version properly.
+
+Thank you for being curious.
+
+— Andrew

@@ -1,9 +1,7 @@
 name: Wake Mira
 
 on:
-  schedule:
-    - cron: '0 8 * * *'  # 8am UTC daily (8am GMT / 9am BST)
-  workflow_dispatch:       # manual trigger from GitHub UI
+  workflow_dispatch:       # manual trigger only — experiment ended 2026-03-27
 
 permissions:
   contents: write
